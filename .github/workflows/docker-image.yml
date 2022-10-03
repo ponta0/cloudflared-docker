@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: |
+        docker build . --tag cloudflared-docker:$(date +%s)
+        docker save cloudflared-docker > cloudflared-docker.tar
+    - name: Upload Docker image
+      uses: actions/upload-artifact@v3
+      with:
+        name: cloudflared-docker
+        path: cloudflared-docker.tar
